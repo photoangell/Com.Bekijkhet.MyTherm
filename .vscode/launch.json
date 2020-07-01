@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/netcoreapp3.1/Com.Bekijkhet.MyTherm.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        },
+        {
+            "name": ".NET Core Remote Launch - Framework Dependent (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "publish and push",
+            "program": "~/dotnet-arm32/dotnet", // <-- can't use dotnet even though it's on the path
+            "args": ["./${workspaceFolderBasename}.dll"],
+            "cwd": "~/${workspaceFolderBasename}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "pipeTransport": {
+                "pipeCwd": "${workspaceRoot}",
+                "pipeProgram": "${env:ChocolateyInstall}\\bin\\PLINK.EXE",
+                "pipeArgs": [
+                    "-i",
+                    "C:\\Users\\Stephen\\.ssh\\mysshkeyfile.ppk",
+                    //"%UserProfile%\\.ssh\\mysshkeyfile.ppk", <-- this doesn't work
+                    "dietpi@192.168.1.209"
+                ],
+                "debuggerPath": "~/vsdbg/vsdbg"
+            }
+        }
+    ]
+}
