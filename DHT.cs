@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Unosquare.RaspberryIO.Abstractions;
 using Unosquare.WiringPi;
@@ -220,10 +221,21 @@ namespace Com.Bekijkhet.MyTherm
             return count;
         }
 
-        private void WaitMicroseconds(int microseconds)
+        private void OldWaitMicroseconds(int microseconds)
         {
-            var until = DateTime.UtcNow.Ticks + (microseconds*10);
-            while (DateTime.UtcNow.Ticks < until) {}
+            var until = DateTime.UtcNow.Ticks + (microseconds * 10) - 20;
+            while (DateTime.UtcNow.Ticks < until) { }
+        }
+
+        private static void WaitMicroseconds(int microseconds)
+        {
+            var durationTicks = (long)Math.Round((decimal)((Stopwatch.Frequency / 1000000) * microseconds));
+            var sw = Stopwatch.StartNew();
+
+            while (sw.ElapsedTicks < durationTicks - 1600)
+            {
+
+            }
         }
     }
 }
