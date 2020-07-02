@@ -20,6 +20,7 @@ namespace Com.Bekijkhet.MyTherm
                         Console.WriteLine(DateTime.UtcNow);
                         Console.WriteLine(" temp: " + d.TempCelcius);
                         Console.WriteLine(" hum: " + d.Humidity);
+                        Console.WriteLine(" heat index: " + d.HeatIndex);
                     } catch (DHTException e) {
                         Console.Error.WriteLine(e.Message + " - " + e.StackTrace);
                     } 
