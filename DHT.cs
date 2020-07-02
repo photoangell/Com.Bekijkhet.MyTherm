@@ -65,11 +65,12 @@ namespace Com.Bekijkhet.MyTherm
                         h /= 10;
                         break;
                 }
-                return new DHTData() {
+                return new DHTData()
+                {
                     TempCelcius = t,
                     TempFahrenheit = ConvertCtoF(t),
                     Humidity = h,
-                    HeatIndex = ComputeHeatIndex(t, h, false)       
+                    HeatIndex = ComputeHeatIndex(t, h, false)
                 };
             }
             throw new DHTException("DHT.Read failed", new InvalidOperationException());
@@ -127,11 +128,11 @@ namespace Com.Bekijkhet.MyTherm
             }
 
             _firstReading = false;
-            _prevReading = now;;
+            _prevReading = now;
 
             _data[0] = _data[1] = _data[2] = _data[3] = _data[4] = 0;
 
-            _dataPin.PinMode=GpioPinDriveMode.Output;
+            _dataPin.PinMode = GpioPinDriveMode.Output;
 
             _dataPin.Write(GpioPinValue.High);
 
@@ -146,7 +147,7 @@ namespace Com.Bekijkhet.MyTherm
             //=> DELAY OF 40 microseconds needed here
             WaitMicroseconds(40);
 
-            _dataPin.PinMode=GpioPinDriveMode.Input;
+            _dataPin.PinMode = GpioPinDriveMode.Input;
             //Delay of 10 microseconds needed here
             WaitMicroseconds(10);
 
