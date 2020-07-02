@@ -43,7 +43,7 @@ namespace Com.Bekijkhet.MyTherm
 
             _dataPin.PinMode = GpioPinDriveMode.Output;
             _dataPin.Write(GpioPinValue.High);
-            Thread.Sleep(250);
+            Thread.Sleep(500);
             _dataPin.Write(GpioPinValue.Low);
             Thread.Sleep(20);
 
@@ -105,7 +105,7 @@ namespace Com.Bekijkhet.MyTherm
             {
                 count++;
                 //WaitMicroseconds(1);
-                if (count == 10000)
+                if (count == 32000)
                 {
                     return 0;
                 }
