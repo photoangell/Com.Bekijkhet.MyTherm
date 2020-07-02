@@ -18,7 +18,7 @@ namespace Com.Bekijkhet.MyTherm
                     try {
                         var d = dht.ReadData();
                         Console.WriteLine(DateTime.Now);
-                        Console.WriteLine(" temp: " + d.TempCelcius);
+                        Console.WriteLine(" temp: " + d.TempCelsius);
                         Console.WriteLine(" hum: " + d.Humidity);
                         Console.WriteLine(" heat index: " + d.HeatIndex);
                     } catch (DHTException e) {

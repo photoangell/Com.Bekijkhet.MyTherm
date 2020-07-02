@@ -18,11 +18,11 @@ namespace Com.Bekijkhet.MyTherm
 
         private DHTSensorTypes _sensorType;
 
-        public DHT(GpioPin datatPin, DHTSensorTypes sensor)
+        public DHT(GpioPin dataPin, DHTSensorTypes sensor)
         {
-            if (datatPin != null)
+            if (dataPin != null)
             {
-                _dataPin = datatPin;
+                _dataPin = dataPin;
                 _firstReading = true;
                 _prevReading = DateTime.MinValue;
                 _data = new UInt32[6];
@@ -68,7 +68,7 @@ namespace Com.Bekijkhet.MyTherm
                 }
                 return new DHTData()
                 {
-                    TempCelcius = t,
+                    TempCelsius = t,
                     TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
                     Humidity = h,
                     HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
