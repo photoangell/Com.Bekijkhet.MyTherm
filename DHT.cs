@@ -71,7 +71,7 @@ namespace Com.Bekijkhet.MyTherm
                     TempCelcius = t,
                     TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
                     Humidity = h,
-                    HeatIndex = TemperatureUtils.ComputeHeatIndex(t, h, false)
+                    HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
                 };
             }
             throw new DHTException("DHT.Read failed", new InvalidOperationException());
