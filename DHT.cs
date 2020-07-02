@@ -20,21 +20,17 @@ namespace Com.Bekijkhet.MyTherm
 
         public DHT(GpioPin dataPin, DHTSensorTypes sensor)
         {
-            if (dataPin != null)
-            {
-                _dataPin = dataPin;
-                _firstReading = true;
-                _prevReading = DateTime.MinValue;
-                _data = new UInt32[6];
-                _sensorType = sensor;
-                //Init the data pin
-                _dataPin.PinMode = GpioPinDriveMode.Output;
-                _dataPin.Write(GpioPinValue.High);
-            }
-            else
-            {
+            if (dataPin == null)
                 throw new ArgumentException("Parameter cannot be null.", "dataPin");
-            }
+
+            _dataPin = dataPin;
+            _firstReading = true;
+            _prevReading = DateTime.MinValue;
+            _data = new UInt32[6];
+            _sensorType = sensor;
+            //Init the data pin
+            _dataPin.PinMode = GpioPinDriveMode.Output;
+            _dataPin.Write(GpioPinValue.High);
         }
 
         public DHTData ReadData()
