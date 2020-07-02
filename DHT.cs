@@ -6,19 +6,14 @@ using Unosquare.WiringPi;
 
 namespace Com.Bekijkhet.MyTherm
 {
-    public class DHT
+    public abstract class DHT
     {
-        private UInt32[] _data;
-
+        protected UInt32[] _data;
         private GpioPin _dataPin;
-
         private bool _firstReading;
-
         private DateTime _prevReading;
 
-        private DHTSensorTypes _sensorType;
-
-        public DHT(GpioPin dataPin, DHTSensorTypes sensor)
+        public DHT(GpioPin dataPin)
         {
             if (dataPin == null)
                 throw new ArgumentException("Parameter cannot be null.", "dataPin");
@@ -27,51 +22,14 @@ namespace Com.Bekijkhet.MyTherm
             _firstReading = true;
             _prevReading = DateTime.MinValue;
             _data = new UInt32[6];
-            _sensorType = sensor;
             //Init the data pin
             _dataPin.PinMode = GpioPinDriveMode.Output;
             _dataPin.Write(GpioPinValue.High);
         }
 
-        public DHTData ReadData()
-        {
-            float t = 0;
-            float h = 0;
+        public abstract DHTData ReadData();
 
-            Read();
-            
-            switch (_sensorType)
-            {
-                case DHTSensorTypes.DHT11:
-                    t = _data[2];
-                    h = _data[0];
-                    break;
-                case DHTSensorTypes.DHT22:
-                case DHTSensorTypes.DHT21:
-                    t = _data[2] & 0x7F;
-                    t *= 256;
-                    t += _data[3];
-                    t /= 10;
-                    if ((_data[2] & 0x80) != 0)
-                    {
-                        t *= -1;
-                    }
-                    h = _data[0];
-                    h *= 256;
-                    h += _data[1];
-                    h /= 10;
-                    break;
-            }
-            return new DHTData()
-            {
-                TempCelsius = t,
-                TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
-                Humidity = h,
-                HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
-            };
-        }
-
-        private void Read()
+        protected void Read()
         {
             var now = DateTime.UtcNow;
 
@@ -84,13 +42,9 @@ namespace Com.Bekijkhet.MyTherm
             _data[0] = _data[1] = _data[2] = _data[3] = _data[4] = 0;
 
             _dataPin.PinMode = GpioPinDriveMode.Output;
-
             _dataPin.Write(GpioPinValue.High);
-
             Thread.Sleep(250);
-
             _dataPin.Write(GpioPinValue.Low);
-
             Thread.Sleep(20);
 
             //TIME CRITICAL ###############
@@ -165,15 +119,12 @@ namespace Com.Bekijkhet.MyTherm
             while (DateTime.UtcNow.Ticks < until) { }
         }
 
-        private static void WaitMicroseconds(int microseconds)
+        private void WaitMicroseconds(int microseconds)
         {
             var durationTicks = (long)Math.Round((decimal)((Stopwatch.Frequency / 1000000) * microseconds));
             var sw = Stopwatch.StartNew();
 
-            while (sw.ElapsedTicks < durationTicks - 1600)
-            {
-
-            }
+            while (sw.ElapsedTicks < durationTicks - 1600) { }
         }
     }
 }
