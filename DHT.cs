@@ -1,8 +1,7 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Unosquare.RaspberryIO;
-using Unosquare.RaspberryIO.Gpio;
+using Unosquare.RaspberryIO.Abstractions;
+using Unosquare.WiringPi;
 
 namespace Com.Bekijkhet.MyTherm
 {

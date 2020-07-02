@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Unosquare.RaspberryIO;
-using Unosquare.RaspberryIO.Gpio;
+using Unosquare.RaspberryIO.Abstractions;
+using Unosquare.WiringPi;
 
 namespace Com.Bekijkhet.MyTherm
 {
@@ -10,7 +11,9 @@ namespace Com.Bekijkhet.MyTherm
         static void Main(string[] args)
         {
             try {
-                var dht = new DHT(Pi.Gpio.Pin07, DHTSensorTypes.DHT22);
+                Pi.Init<BootstrapWiringPi>();
+                var pin = (GpioPin)Pi.Gpio[BcmPin.Gpio07];
+                var dht = new DHT(pin, DHTSensorTypes.DHT11);
                 while (true) {
                     try {
                         var d = dht.ReadData();
