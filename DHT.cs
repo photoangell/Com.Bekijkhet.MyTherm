@@ -38,51 +38,45 @@ namespace Com.Bekijkhet.MyTherm
             float t = 0;
             float h = 0;
 
-            if (Read())
+            Read();
+            
+            switch (_sensorType)
             {
-                switch (_sensorType)
-                {
-                    case DHTSensorTypes.DHT11:
-                        t = _data[2];
-                        h = _data[0];
-                        break;
-                    case DHTSensorTypes.DHT22:
-                    case DHTSensorTypes.DHT21:
-                        t = _data[2] & 0x7F;
-                        t *= 256;
-                        t += _data[3];
-                        t /= 10;
-                        if ((_data[2] & 0x80) != 0)
-                        {
-                            t *= -1;
-                        }
-                        h = _data[0];
-                        h *= 256;
-                        h += _data[1];
-                        h /= 10;
-                        break;
-                }
-                return new DHTData()
-                {
-                    TempCelsius = t,
-                    TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
-                    Humidity = h,
-                    HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
-                };
+                case DHTSensorTypes.DHT11:
+                    t = _data[2];
+                    h = _data[0];
+                    break;
+                case DHTSensorTypes.DHT22:
+                case DHTSensorTypes.DHT21:
+                    t = _data[2] & 0x7F;
+                    t *= 256;
+                    t += _data[3];
+                    t /= 10;
+                    if ((_data[2] & 0x80) != 0)
+                    {
+                        t *= -1;
+                    }
+                    h = _data[0];
+                    h *= 256;
+                    h += _data[1];
+                    h /= 10;
+                    break;
             }
-            throw new DHTException("DHT.Read failed", new InvalidOperationException());
+            return new DHTData()
+            {
+                TempCelsius = t,
+                TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
+                Humidity = h,
+                HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
+            };
         }
 
-
-
-        private bool Read()
+        private void Read()
         {
             var now = DateTime.UtcNow;
 
             if (!_firstReading && ((now - _prevReading).TotalMilliseconds < 2000))
-            {
-                return false;
-            }
+                throw new DHTException("attempted re read too soon", new InvalidOperationException());
 
             _firstReading = false;
             _prevReading = now;
@@ -109,13 +103,10 @@ namespace Com.Bekijkhet.MyTherm
             WaitMicroseconds(10);
 
             if (ExpectPulse(GpioPinValue.Low) == 0)
-            {
-                return false;
-            }
+                throw new DHTException("expected low pulse failed", new InvalidOperationException());
+
             if (ExpectPulse(GpioPinValue.High) == 0)
-            {
-                return false;
-            }
+                throw new DHTException("expected high pulse failed", new InvalidOperationException());
 
             // Now read the 40 bits sent by the sensor.  Each bit is sent as a 50
             // microsecond low pulse followed by a variable length high pulse.  If the
@@ -128,14 +119,12 @@ namespace Com.Bekijkhet.MyTherm
             {
                 UInt32 lowCycles = ExpectPulse(GpioPinValue.Low);
                 if (lowCycles == 0)
-                {
-                    return false;
-                }
+                    throw new DHTException("expected low cycles failed", new InvalidOperationException());
+
                 UInt32 highCycles = ExpectPulse(GpioPinValue.High);
                 if (highCycles == 0)
-                {
-                    return false;
-                }
+                    throw new DHTException("expected high cycles failed", new InvalidOperationException());
+
                 _data[i / 8] <<= 1;
                 // Now compare the low and high cycle times to see if the bit is a 0 or 1.
                 if (highCycles > lowCycles)
@@ -150,15 +139,8 @@ namespace Com.Bekijkhet.MyTherm
             //TIME CRITICAL_END #############
 
             // Check we read 40 bits and that the checksum matches.
-            if (_data[4] == ((_data[0] + _data[1] + _data[2] + _data[3]) & 0xFF))
-            {
-                return true;
-            }
-            else
-            {
-                //Checksum failure!
-                return false;
-            }
+            if (_data[4] != ((_data[0] + _data[1] + _data[2] + _data[3]) & 0xFF))
+                throw new DHTException("checksum failed", new InvalidOperationException());
         }
 
         private UInt32 ExpectPulse(GpioPinValue level)
