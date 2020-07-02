@@ -72,7 +72,7 @@ namespace Com.Bekijkhet.MyTherm
                     HeatIndex = ComputeHeatIndex(t, h, false)       
                 };
             }
-            throw new DHTException();
+            throw new DHTException("DHT.Read failed", new InvalidOperationException());
         }
 
         float ConvertCtoF(float c)

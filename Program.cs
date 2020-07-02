@@ -20,8 +20,9 @@ namespace Com.Bekijkhet.MyTherm
                         Console.WriteLine(DateTime.UtcNow);
                         Console.WriteLine(" temp: " + d.TempCelcius);
                         Console.WriteLine(" hum: " + d.Humidity);
-                    } catch (DHTException) {
-                    }
+                    } catch (DHTException e) {
+                        Console.Error.WriteLine(e.Message + " - " + e.StackTrace);
+                    } 
                     Thread.Sleep(10000);
                 }
             }
