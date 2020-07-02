@@ -12,13 +12,7 @@ namespace Com.Bekijkhet.MyTherm
             float t = _data[2];
             float h = _data[0];
 
-            return new DHTData()
-            {
-                TempCelsius = t,
-                TempFahrenheit = TemperatureUtils.ConvertCtoF(t),
-                Humidity = h,
-                HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h)
-            };
+            return new DHTData(t, h);
         }
     }
 }
