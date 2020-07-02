@@ -29,6 +29,20 @@ namespace Com.Bekijkhet.MyTherm
 
         public abstract DHTData ReadData();
 
+        public DHTData ReadDataWithRetries() {
+            for (var i = 1; i <= 15; i++) {
+                try {
+                    var data = ReadData();
+                    return data;
+                } 
+                catch (Exception e) {
+                    Debug.WriteLine (e.Message);
+                }
+                Thread.Sleep(2000);
+            }
+            throw new DHTException("read retries exceeded", new IndexOutOfRangeException());
+        }
+
         protected void Read()
         {
             var now = DateTime.UtcNow;

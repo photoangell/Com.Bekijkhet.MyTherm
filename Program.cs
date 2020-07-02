@@ -13,10 +13,10 @@ namespace Com.Bekijkhet.MyTherm
             try {
                 Pi.Init<BootstrapWiringPi>();
                 var pin = (GpioPin)Pi.Gpio[BcmPin.Gpio04];
-                var dht = new DHT(pin, DHTSensorTypes.DHT11);
+                var dht = new DHT11(pin);
                 while (true) {
                     try {
-                        var d = dht.ReadData();
+                        var d = dht.ReadDataWithRetries();
                         Console.WriteLine(DateTime.Now);
                         Console.WriteLine(" temp: " + d.TempCelsius);
                         Console.WriteLine(" hum: " + d.Humidity);
