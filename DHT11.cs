@@ -8,12 +8,9 @@ namespace Com.Bekijkhet.MyTherm
     
         public override DHTData ReadData()
         {
-            float t = 0;
-            float h = 0;
-
             Read();
-            t = _data[2];
-            h = _data[0];
+            float t = _data[2];
+            float h = _data[0];
 
             return new DHTData()
             {
