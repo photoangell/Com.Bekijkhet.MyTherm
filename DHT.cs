@@ -55,24 +55,15 @@ namespace Com.Bekijkhet.MyTherm
 
             _data[0] = _data[1] = _data[2] = _data[3] = _data[4] = 0;
 
+            //TIME CRITICAL ###############
             _dataPin.PinMode = GpioPinDriveMode.Output;
-            _dataPin.Write(GpioPinValue.High);
-            Thread.Sleep(500);
             _dataPin.Write(GpioPinValue.Low);
             Thread.Sleep(20);
-
-            //TIME CRITICAL ###############
             _dataPin.Write(GpioPinValue.High);
-            //=> DELAY OF 40 microseconds needed here
-            WaitMicroseconds(40);
 
             _dataPin.PinMode = GpioPinDriveMode.Input;
-            //Delay of 10 microseconds needed here
-            WaitMicroseconds(10);
-
             if (ExpectPulse(GpioPinValue.Low) == 0)
                 throw new DHTException("expected low pulse failed", new InvalidOperationException());
-
             if (ExpectPulse(GpioPinValue.High) == 0)
                 throw new DHTException("expected high pulse failed", new InvalidOperationException());
 
@@ -125,12 +116,6 @@ namespace Com.Bekijkhet.MyTherm
                 }
             }
             return count;
-        }
-
-        private void OldWaitMicroseconds(int microseconds)
-        {
-            var until = DateTime.UtcNow.Ticks + (microseconds * 10) - 20;
-            while (DateTime.UtcNow.Ticks < until) { }
         }
 
         private void WaitMicroseconds(int microseconds)

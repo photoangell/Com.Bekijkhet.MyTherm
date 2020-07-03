@@ -1,3 +1,5 @@
+using System;
+
 namespace Com.Bekijkhet.MyTherm
 {
     public class DHTData
@@ -12,7 +14,7 @@ namespace Com.Bekijkhet.MyTherm
             TempCelsius = t;
             TempFahrenheit = TemperatureUtils.ConvertCtoF(t);
             Humidity = h;
-            HeatIndex = TemperatureUtils.ComputeHeatIndexFromCelsius(t, h);
+            HeatIndex = Math.Round(TemperatureUtils.ComputeHeatIndexFromCelsius(t, h), 1);
         }
     }
 }

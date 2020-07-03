@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Abstractions;
@@ -12,6 +13,7 @@ namespace Com.Bekijkhet.MyTherm
         {
             try {
                 Pi.Init<BootstrapWiringPi>();
+                Debug.WriteLine(Pi.Info.ToString());
                 var pin = (GpioPin)Pi.Gpio[BcmPin.Gpio04];
                 var dht = new DHT11(pin);
                 while (true) {
@@ -24,7 +26,7 @@ namespace Com.Bekijkhet.MyTherm
                     } catch (DHTException e) {
                         Console.Error.WriteLine(e.Message + " - " + e.StackTrace);
                     } 
-                    Thread.Sleep(10000);
+                    Thread.Sleep(2000);
                 }
             }
             catch (Exception e) {
